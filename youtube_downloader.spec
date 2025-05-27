@@ -1,18 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
+from PyInstaller.utils.hooks import collect_dynamic_libs
 
 block_cipher = None
 
-# Get the absolute path to the icon file
-icon_path = os.path.abspath(os.path.join(os.getcwd(), 'icon.ico'))
+# Get the absolute path to FFmpeg files
+ffmpeg_files = [
+    ('ffmpeg/ffmpeg.exe', 'ffmpeg'),
+    ('ffmpeg/ffprobe.exe', 'ffmpeg')
+]
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[
-        ('ffmpeg/ffmpeg.exe', 'ffmpeg'),
-        ('ffmpeg/ffprobe.exe', 'ffmpeg'),
-    ],
+    binaries=ffmpeg_files,
     datas=[],
     hiddenimports=[],
     hookspath=[],
@@ -24,6 +25,9 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+# Add FFmpeg files to the bundle
+a.binaries += ffmpeg_files
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
@@ -46,5 +50,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=icon_path
+    icon=os.path.abspath('icon.ico') if os.path.exists('icon.ico') else None
 ) 
