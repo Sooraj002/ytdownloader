@@ -1,2 +1,5 @@
 pkgs
 output
+venv
+# dist
+build
